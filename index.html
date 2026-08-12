@@ -1,0 +1,2709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkSmart - Parking Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* All existing styles remain the same - only adding new report tab styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --blue: #1A56DB;
+            --blue-light: #3B82F6;
+            --blue-dark: #1E3A5F;
+            --blue-gradient: linear-gradient(135deg, #1A56DB 0%, #3B82F6 50%, #60A5FA 100%);
+            --yellow: #F59E0B;
+            --yellow-light: #FBBF24;
+            --yellow-dark: #D97706;
+            --yellow-gradient: linear-gradient(135deg, #F59E0B 0%, #FBBF24 50%, #FCD34D 100%);
+            --red: #DC2626;
+            --red-light: #EF4444;
+            --red-dark: #B91C1C;
+            --red-gradient: linear-gradient(135deg, #DC2626 0%, #EF4444 50%, #F87171 100%);
+            --black: #0A0A0A;
+            --black-light: #1A1A1A;
+            --primary: var(--blue);
+            --primary-light: var(--blue-light);
+            --primary-dark: var(--blue-dark);
+            --primary-gradient: linear-gradient(135deg, #1A56DB 0%, #3B82F6 40%, #F59E0B 75%, #DC2626 100%);
+            --accent: var(--yellow);
+            --accent-light: var(--yellow-light);
+            --danger: var(--red);
+            --danger-light: var(--red-light);
+            --success: #059669;
+            --success-light: #10B981;
+            --gray-50: #F8FAFC;
+            --gray-100: #F1F5F9;
+            --gray-200: #E2E8F0;
+            --gray-300: #CBD5E1;
+            --gray-400: #94A3B8;
+            --gray-500: #64748B;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1E293B;
+            --gray-900: #0F172A;
+            --shadow: 0 4px 24px rgba(26, 86, 219, 0.12);
+            --shadow-lg: 0 8px 48px rgba(26, 86, 219, 0.18);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--black);
+            background-image: 
+                radial-gradient(ellipse at 10% 20%, rgba(26, 86, 219, 0.05) 0%, transparent 60%),
+                radial-gradient(ellipse at 90% 80%, rgba(245, 158, 11, 0.05) 0%, transparent 60%),
+                radial-gradient(ellipse at 50% 50%, rgba(220, 38, 38, 0.03) 0%, transparent 70%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1280px;
+        }
+
+        /* Auth styles remain the same */
+        .auth-container {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            max-width: 480px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--primary-gradient);
+        }
+
+        .auth-header {
+            background: var(--black);
+            color: white;
+            padding: 40px 30px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-header::after {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: rgba(245, 158, 11, 0.08);
+            border-radius: 50%;
+        }
+
+        .auth-header::before {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            left: -10%;
+            width: 250px;
+            height: 250px;
+            background: rgba(220, 38, 38, 0.06);
+            border-radius: 50%;
+        }
+
+        .auth-header .logo-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-header .highlight-yellow {
+            color: #FCD34D;
+        }
+
+        .auth-header .highlight-red {
+            color: #FCA5A5;
+        }
+
+        .auth-header p {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 6px;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+            color: var(--gray-300);
+        }
+
+        .auth-body {
+            padding: 35px 30px 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-tabs {
+            display: flex;
+            background: var(--gray-100);
+            border-radius: var(--radius-sm);
+            padding: 4px;
+            margin-bottom: 25px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--gray-500);
+            font-family: inherit;
+        }
+
+        .auth-tab.active {
+            background: white;
+            color: var(--black);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .auth-tab.active .fa-user-shield {
+            color: var(--red);
+        }
+
+        .auth-tab.active .fa-user {
+            color: var(--blue);
+        }
+
+        .auth-tab:hover:not(.active) {
+            color: var(--gray-700);
+        }
+
+        .auth-tab i {
+            margin-right: 6px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--black);
+            margin-bottom: 6px;
+        }
+
+        .form-group .input-wrapper {
+            position: relative;
+        }
+
+        .form-group .input-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 14px 12px 44px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-family: inherit;
+            transition: var(--transition);
+            background: white;
+            color: var(--black);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 4px rgba(26, 86, 219, 0.10);
+        }
+
+        .form-group input::placeholder {
+            color: var(--gray-400);
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--black);
+            color: white;
+            width: 100%;
+            font-size: 15px;
+            padding: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.10) 0%, transparent 60%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover::after {
+            opacity: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(10, 10, 10, 0.30);
+        }
+
+        .btn-success {
+            background: var(--blue-gradient);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(26, 86, 219, 0.30);
+        }
+
+        .btn-danger {
+            background: var(--red-gradient);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(220, 38, 38, 0.30);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .auth-footer a {
+            color: var(--blue);
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Dashboard styles */
+        .dashboard-container {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .dashboard-header {
+            background: var(--black);
+            color: white;
+            padding: 24px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .dashboard-header .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dashboard-header .brand i {
+            font-size: 28px;
+            color: var(--yellow);
+        }
+
+        .dashboard-header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .dashboard-header .subtitle {
+            font-size: 13px;
+            opacity: 0.7;
+            font-weight: 400;
+            color: var(--gray-300);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 8px 16px 8px 12px;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .user-badge .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--blue-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: white;
+        }
+
+        .user-badge .name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.06);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: var(--transition);
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .dashboard-content {
+            padding: 28px 32px 32px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 28px;
+            background: var(--gray-100);
+            padding: 4px;
+            border-radius: var(--radius-sm);
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--gray-500);
+            transition: var(--transition);
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn i {
+            font-size: 14px;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--black);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .tab-btn.active i {
+            color: var(--blue);
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: var(--gray-700);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            border-color: var(--gray-300);
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--black);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--blue);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            padding: 20px 24px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary-gradient);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-card .stat-icon {
+            font-size: 24px;
+            color: var(--blue);
+            margin-bottom: 8px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--black);
+            letter-spacing: -0.5px;
+        }
+
+        .stat-card .stat-label {
+            font-size: 13px;
+            color: var(--gray-500);
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        /* Floor Availability */
+        .floor-availability {
+            background: var(--gray-50);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--gray-200);
+            transition: var(--transition);
+        }
+
+        .floor-availability:hover {
+            background: white;
+            box-shadow: var(--shadow);
+        }
+
+        .floor-availability .floor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .floor-availability .floor-title {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--black);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .floor-availability .floor-title i {
+            color: var(--blue);
+        }
+
+        .floor-availability .floor-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            flex-wrap: wrap;
+        }
+
+        .floor-availability .floor-stats .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 500;
+        }
+
+        .floor-availability .floor-stats .stat-item .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .floor-availability .floor-stats .stat-item .dot.green {
+            background: var(--success);
+        }
+
+        .floor-availability .floor-stats .stat-item .dot.red {
+            background: var(--red);
+        }
+
+        .dots-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 8px 0;
+            margin-top: 8px;
+        }
+
+        .dot-seat {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: default;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .dot-seat.vacant {
+            background: #D1FAE5;
+            border-color: #34D399;
+            color: #065F46;
+        }
+
+        .dot-seat.vacant:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.20);
+            z-index: 2;
+        }
+
+        .dot-seat.occupied {
+            background: #FEE2E2;
+            border-color: #F87171;
+            color: #991B1B;
+        }
+
+        .dot-seat.occupied:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.20);
+            z-index: 2;
+        }
+
+        .dot-seat .seat-number {
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .legend-dots {
+            display: flex;
+            gap: 20px;
+            margin: 12px 0 4px;
+            flex-wrap: wrap;
+            padding: 8px 0;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .legend-dots .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--gray-600);
+        }
+
+        .legend-dots .legend-item .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .legend-dots .legend-item .dot.vacant {
+            background: #D1FAE5;
+            border: 2px solid #34D399;
+        }
+
+        .legend-dots .legend-item .dot.occupied {
+            background: #FEE2E2;
+            border: 2px solid #F87171;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--gray-200);
+            border-radius: 50px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-gradient);
+            border-radius: 50px;
+            transition: width 0.6s ease;
+        }
+
+        .floor-availability .floor-detail {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-top: 6px;
+        }
+
+        /* Spots Grid */
+        .spots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .spot-cell {
+            padding: 10px 4px;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            position: relative;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .spot-cell .spot-number {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .spot-cell .spot-type {
+            font-size: 8px;
+            opacity: 0.6;
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        .spot-vacant {
+            background: #ECFDF5;
+            border-color: #34D399;
+            color: #065F46;
+        }
+
+        .spot-vacant:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+        }
+
+        .spot-occupied {
+            background: #FEF2F2;
+            border-color: #F87171;
+            color: #991B1B;
+        }
+
+        .spot-occupied:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+        }
+
+        .legend {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid;
+        }
+
+        .legend-color.vacant {
+            background: #ECFDF5;
+            border-color: #34D399;
+        }
+
+        .legend-color.occupied {
+            background: #FEF2F2;
+            border-color: #F87171;
+        }
+
+        /* Display Boards */
+        .display-board {
+            background: var(--gray-50);
+            border-radius: var(--radius-sm);
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            border-left: 4px solid var(--blue);
+        }
+
+        .display-board .board-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--black);
+            margin-bottom: 4px;
+        }
+
+        .display-board .board-subtitle {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-bottom: 12px;
+        }
+
+        .display-board .spot-type-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            padding: 4px 0;
+        }
+
+        .display-board .spot-type-row .label {
+            font-weight: 600;
+        }
+
+        .display-board .spot-type-row .count {
+            color: var(--gray-500);
+        }
+
+        .display-board .mini-progress {
+            height: 6px;
+            background: var(--gray-200);
+            border-radius: 50px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .display-board .mini-progress .fill {
+            height: 100%;
+            background: var(--success);
+            border-radius: 50px;
+            transition: width 0.6s ease;
+        }
+
+        /* Ticket Display */
+        .ticket-display {
+            background: white;
+            border: 2px solid var(--blue);
+            border-radius: var(--radius-sm);
+            padding: 20px 24px;
+            margin-top: 16px;
+        }
+
+        .ticket-display .ticket-title {
+            color: var(--blue);
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ticket-display table td {
+            padding: 6px 12px 6px 0;
+            border: none;
+            font-size: 14px;
+        }
+
+        .ticket-display table td:first-child {
+            font-weight: 600;
+            color: var(--gray-600);
+            width: 140px;
+        }
+
+        .ticket-display table td:last-child {
+            font-weight: 500;
+            color: var(--black);
+        }
+
+        /* Receipt */
+        .receipt {
+            background: #ECFDF5;
+            border: 2px solid var(--success);
+            border-radius: var(--radius-sm);
+            padding: 20px 24px;
+            margin-top: 16px;
+        }
+
+        .receipt .receipt-title {
+            color: var(--success);
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .receipt table td {
+            padding: 6px 12px 6px 0;
+            border: none;
+            font-size: 14px;
+        }
+
+        .receipt table td:first-child {
+            font-weight: 600;
+            color: var(--gray-600);
+            width: 140px;
+        }
+
+        /* Messages */
+        .message {
+            padding: 14px 18px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 16px;
+            display: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .message-success {
+            background: #ECFDF5;
+            color: #065F46;
+            border-left: 4px solid var(--success);
+            display: block;
+        }
+
+        .message-error {
+            background: #FEF2F2;
+            color: #991B1B;
+            border-left: 4px solid var(--red);
+            display: block;
+        }
+
+        /* Notification */
+        .notification-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 420px;
+        }
+
+        .notification {
+            padding: 16px 20px;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease-out;
+            font-weight: 500;
+            font-size: 14px;
+            background: white;
+            border-left: 4px solid var(--blue);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(400px); opacity: 0; }
+        }
+
+        .notification.removing {
+            animation: slideOut 0.3s ease-in forwards;
+        }
+
+        .notification-error {
+            border-left-color: var(--red);
+            color: #991B1B;
+        }
+
+        .notification-success {
+            border-left-color: var(--success);
+            color: #065F46;
+        }
+
+        .notification-info {
+            border-left-color: var(--blue);
+            color: #1E40AF;
+        }
+
+        .notification-warning {
+            border-left-color: var(--yellow);
+            color: #92400E;
+        }
+
+        .notification-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--gray-400);
+            padding: 0 4px;
+            transition: var(--transition);
+        }
+
+        .notification-close:hover {
+            color: var(--gray-600);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .color-input-wrapper {
+            position: relative;
+        }
+
+        .color-input-wrapper input[type="text"] {
+            padding-left: 44px;
+        }
+
+        .color-input-wrapper .color-preview {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--gray-200);
+        }
+
+        /* Report Table Styles */
+        .report-table-wrapper {
+            overflow-x: auto;
+            margin-top: 12px;
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+
+        .report-table thead {
+            background: var(--black);
+            color: white;
+        }
+
+        .report-table th {
+            padding: 14px 18px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .report-table td {
+            padding: 12px 18px;
+            border-bottom: 1px solid var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .report-table tbody tr {
+            transition: var(--transition);
+        }
+
+        .report-table tbody tr:hover {
+            background: var(--gray-50);
+        }
+
+        .report-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .report-table .total-row {
+            background: var(--gray-50);
+            font-weight: 700;
+        }
+
+        .report-table .total-row td {
+            color: var(--black);
+            border-top: 2px solid var(--gray-300);
+        }
+
+        /* Report Period Tabs */
+        .report-period-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .report-period-btn {
+            padding: 10px 24px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-sm);
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: var(--transition);
+            font-family: inherit;
+            color: var(--gray-600);
+        }
+
+        .report-period-btn:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+        }
+
+        .report-period-btn.active {
+            border-color: var(--blue);
+            background: var(--blue);
+            color: white;
+        }
+
+        .report-period-content {
+            display: none;
+        }
+
+        .report-period-content.active {
+            display: block;
+        }
+
+        /* Charges Table */
+        .charges-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+
+        .charges-table thead {
+            background: var(--black);
+            color: white;
+        }
+
+        .charges-table th {
+            padding: 14px 18px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .charges-table td {
+            padding: 12px 18px;
+            border-bottom: 1px solid var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .charges-table tbody tr:hover {
+            background: var(--gray-50);
+        }
+
+        .charges-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        @media (max-width: 768px) {
+            .auth-container {
+                max-width: 100%;
+            }
+
+            .dashboard-header {
+                padding: 20px;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .dashboard-content {
+                padding: 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+                gap: 2px;
+            }
+
+            .tab-btn {
+                justify-content: center;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .spots-grid {
+                grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            }
+
+            .dots-grid {
+                gap: 4px;
+            }
+
+            .dot-seat {
+                width: 30px;
+                height: 30px;
+                font-size: 9px;
+            }
+
+            .notification-container {
+                left: 16px;
+                right: 16px;
+                max-width: none;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .floor-availability .floor-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .report-table th,
+            .report-table td {
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+
+            .charges-table th,
+            .charges-table td {
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+
+            .report-period-tabs {
+                flex-direction: column;
+            }
+
+            .report-period-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-header h1 {
+                font-size: 18px;
+            }
+
+            .dot-seat {
+                width: 26px;
+                height: 26px;
+                font-size: 8px;
+                border-radius: 4px;
+            }
+
+            .dots-grid {
+                gap: 3px;
+            }
+
+            .spots-grid {
+                grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+            }
+
+            .report-table th,
+            .report-table td {
+                padding: 8px 10px;
+                font-size: 11px;
+            }
+
+            .charges-table th,
+            .charges-table td {
+                padding: 8px 10px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="notificationContainer" class="notification-container"></div>
+
+        <!-- LOGIN VIEW -->
+        <div id="loginView" class="auth-container">
+            <div class="auth-header">
+                <span class="logo-icon">🅿️</span>
+                <h1>Park<span class="highlight-yellow"> Smart</span></h1>
+                <p>Smart Parking Management System</p>
+            </div>
+            <div class="auth-body">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" onclick="setLoginType('user')" id="loginUserTab">
+                        <i class="fas fa-user"></i> User
+                    </button>
+                    <button class="auth-tab" onclick="setLoginType('admin')" id="loginAdminTab">
+                        <i class="fas fa-user-shield"></i> Admin
+                    </button>
+                </div>
+                <div class="message message-error" id="loginAlert"></div>
+                <div class="message message-success" id="loginSuccess"></div>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="loginUsername" placeholder="Enter your username" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </form>
+                <div class="auth-footer">
+                    Don't have an account? <a onclick="showRegisterView()">Create One New</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- REGISTER VIEW -->
+        <div id="registerView" class="auth-container hidden">
+            <div class="auth-header">
+                <span class="logo-icon">🅿️</span>
+                <h1>Park <span class="highlight-yellow">Smart</span></h1>
+                <p>Register for the Park Smart</p>
+            </div>
+            <div class="auth-body">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" onclick="setRegisterType('user')" id="registerUserTab">
+                        <i class="fas fa-user"></i> User
+                    </button>
+                    <button class="auth-tab" onclick="setRegisterType('admin')" id="registerAdminTab">
+                        <i class="fas fa-user-shield"></i> Admin
+                    </button>
+                </div>
+                <div class="message message-error" id="registerAlert"></div>
+                <div class="message message-success" id="registerSuccess"></div>
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="registerUsername" placeholder="Choose a username" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="registerPassword" placeholder="Choose a strong password" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-check-circle"></i>
+                            <input type="password" id="registerConfirm" placeholder="Confirm your password" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i> Register
+                    </button>
+                </form>
+                <div class="auth-footer">
+                    Already have an account? <a onclick="showLoginView()">Login here</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- USER DASHBOARD -->
+        <div id="userDashboard" class="dashboard-container hidden">
+            <div class="dashboard-header">
+                <div class="brand">
+                    <i class="fas fa-parking"></i>
+                    <div>
+                        <h1>Park <span class="highlight-yellow">Smart</span></h1>
+                        <div class="subtitle">User Dashboard</div>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div class="user-badge">
+                        <div class="avatar" id="userAvatar">U</div>
+                        <span class="name" id="userUsername">User</span>
+                    </div>
+                    <button class="btn-logout" onclick="handleLogout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchUserTab('vehicleEntry')">
+                        <i class="fas fa-car"></i> Vehicle Entry
+                    </button>
+                    <button class="tab-btn" onclick="switchUserTab('vehicleExit')">
+                        <i class="fas fa-arrow-right"></i> Vehicle Exit
+                    </button>
+                    <button class="tab-btn" onclick="switchUserTab('allDisplays')">
+                        <i class="fas fa-tv"></i> All Displays
+                    </button>
+                    <button class="tab-btn" onclick="switchUserTab('floorDisplay')">
+                        <i class="fas fa-layer-group"></i> Floor Display
+                    </button>
+                    <button class="tab-btn" onclick="switchUserTab('lookupTicket')">
+                        <i class="fas fa-search"></i> Lookup Ticket
+                    </button>
+                    <button class="tab-btn" onclick="switchUserTab('lostTicket')">
+                        <i class="fas fa-ticket-alt"></i> Lost Ticket
+                    </button>
+                    <button class="tab-btn" onclick="switchUserTab('chargesList')">
+                        <i class="fas fa-receipt"></i> Charges List
+                    </button>
+                </div>
+
+                <!-- Vehicle Entry -->
+                <div id="vehicleEntry" class="tab-content active">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title"><i class="fas fa-parking"></i> Vehicle Entry</div>
+                        </div>
+                        <div class="message message-success" id="entrySuccess"></div>
+                        <div class="message message-error" id="entryError"></div>
+                        <form onsubmit="handleVehicleEntry(event)" class="form-section">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Vehicle Type</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-tag"></i>
+                                        <select id="vehicleType" required>
+                                            <option value="">Select Type</option>
+                                            <option value="BIKE">Bike</option>
+                                            <option value="ELECTRIC_BIKE">Electric Bike</option>
+                                            <option value="CAR">Car</option>
+                                            <option value="ELECTRIC_CAR">Electric Car</option>
+                                            <option value="BUS">Bus</option>
+                                            <option value="TRUCK">Truck</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Vehicle Number</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-id-card"></i>
+                                        <input type="text" id="vehicleNumber" placeholder="e.g., TN10AD1234" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Owner Name</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-user"></i>
+                                        <input type="text" id="ownerName" placeholder="Full name" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Color</label>
+                                    <div class="color-input-wrapper">
+                                        <input type="text" id="vehicleColor" placeholder="Select or type color" list="colorList">
+                                        <div class="color-preview" id="colorPreview" style="background: #CCCCCC;"></div>
+                                    </div>
+                                    <datalist id="colorList">
+                                        <option value="Black">Black</option>
+                                        <option value="White">White</option>
+                                        <option value="Red">Red</option>
+                                        <option value="Blue">Blue</option>
+                                        <option value="Silver">Silver</option>
+                                        <option value="Gray">Gray</option>
+                                        <option value="Green">Green</option>
+                                        <option value="Yellow">Yellow</option>
+                                        <option value="Orange">Orange</option>
+                                        <option value="Brown">Brown</option>
+                                        <option value="Purple">Purple</option>
+                                        <option value="Pink">Pink</option>
+                                        <option value="Gold">Gold</option>
+                                        <option value="Navy">Navy</option>
+                                        <option value="Maroon">Maroon</option>
+                                        <option value="Teal">Teal</option>
+                                    </datalist>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success" style="width: 100%;">
+                                <i class="fas fa-check-circle"></i> Park Vehicle
+                            </button>
+                        </form>
+                        <div id="entryTicket" class="ticket-display hidden">
+                            <div class="ticket-title"><i class="fas fa-ticket-alt"></i> Ticket Generated</div>
+                            <table>
+                                <tr><td>Ticket ID</td><td id="ticketIdDisplay"></td></tr>
+                                <tr><td>Vehicle Number</td><td id="ticketVehicleDisplay"></td></tr>
+                                <tr><td>Vehicle Type</td><td id="ticketTypeDisplay"></td></tr>
+                                <tr><td>Owner Name</td><td id="ticketOwnerDisplay"></td></tr>
+                                <tr><td>Spot Number</td><td id="ticketSpotDisplay"></td></tr>
+                                <tr><td>Floor</td><td id="ticketFloorDisplay"></td></tr>
+                                <tr><td>Entry Time</td><td id="ticketEntryDisplay"></td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title"><i class="fas fa-chart-bar"></i> Floor Availability</div>
+                        <div id="floorStatus"></div>
+                    </div>
+                </div>
+
+                <!-- Vehicle Exit -->
+                <div id="vehicleExit" class="tab-content">
+                    <div class="card">
+                        <div class="card-title"><i class="fas fa-arrow-right"></i> Vehicle Exit & Payment</div>
+                        <div class="message message-success" id="paymentSuccess"></div>
+                        <div class="message message-error" id="paymentError"></div>
+                        <form onsubmit="handleCalculatePayment(event)" class="form-section">
+                            <div class="form-group">
+                                <label>Vehicle Number</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-id-card"></i>
+                                    <input type="text" id="paymentVehicleNumber" placeholder="Enter vehicle number" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success" style="width: 100%;">
+                                <i class="fas fa-calculator"></i> Calculate Amount
+                            </button>
+                        </form>
+                        <div id="paymentDetails" class="hidden" style="background: white; border: 2px solid var(--blue); border-radius: var(--radius-sm); padding: 20px; margin-top: 16px;">
+                            <h4 style="color: var(--blue); margin-bottom: 12px;"><i class="fas fa-credit-card"></i> Payment Information</h4>
+                            <table>
+                                <tr><td>Duration</td><td id="paymentDuration"></td></tr>
+                                <tr><td>Hourly Rate</td><td id="paymentRate"></td></tr>
+                                <tr><td>Total Minutes</td><td id="paymentTotalMinutes"></td></tr>
+                                <tr style="background: var(--gray-50); font-size: 18px; font-weight: 700;">
+                                    <td>Amount Due</td>
+                                    <td id="paymentAmount" style="color: var(--blue);"></td>
+                                </tr>
+                            </table>
+                            <form onsubmit="handleProcessPayment(event)" style="margin-top: 16px;">
+                                <div class="form-group">
+                                    <label>Payment Method</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                        <select id="paymentMethod" required>
+                                            <option value="">Select Method</option>
+                                            <option value="Cash">Cash</option>
+                                            <option value="Card">Card</option>
+                                            <option value="UPI">UPI</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-danger" style="width: 100%;">
+                                    <i class="fas fa-check"></i> Complete Payment & Exit
+                                </button>
+                            </form>
+                        </div>
+                        <div id="receiptDisplay" class="receipt hidden">
+                            <div class="receipt-title"><i class="fas fa-check-circle"></i> Payment Successful</div>
+                            <table>
+                                <tr><td>Payment ID</td><td id="receiptPaymentId"></td></tr>
+                                <tr><td>Ticket ID</td><td id="receiptTicketId"></td></tr>
+                                <tr><td>Amount Paid</td><td id="receiptAmount"></td></tr>
+                                <tr><td>Method</td><td id="receiptMethod"></td></tr>
+                                <tr><td>Status</td><td><span class="badge badge-success">Completed</span></td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- All Displays -->
+                <div id="allDisplays" class="tab-content">
+                    <div class="card">
+                        <div class="card-title"><i class="fas fa-tv"></i> All Display Boards</div>
+                        <div id="allDisplayBoardsContent"></div>
+                    </div>
+                </div>
+
+                <!-- Floor Display -->
+                <div id="floorDisplay" class="tab-content">
+                    <div class="card">
+                        <div class="card-title"><i class="fas fa-layer-group"></i> Floor Spot Display</div>
+                        <div class="form-group" style="max-width: 300px; margin-bottom: 16px;">
+                            <label>Select Floor</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-building"></i>
+                                <select id="floorDisplaySelector" onchange="loadFloorSpotsGrid()">
+                                    <option value="1">Ground Floor 1</option>
+                                    <option value="2">Floor 2</option>
+                                    <option value="3">Floor 3</option>
+                                    <option value="4">Floor 4</option>
+                                    <option value="5">Floor 5</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="legend">
+                            <div class="legend-item">
+                                <span class="legend-color vacant"></span> Vacant
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color occupied"></span> Occupied
+                            </div>
+                        </div>
+                        <div id="floorSpotsGrid" class="spots-grid"></div>
+                        <div id="spotDetailsBox" class="hidden" style="background: var(--gray-50); border-left: 4px solid var(--blue); padding: 16px; border-radius: var(--radius-sm); margin-top: 16px;">
+                            <h4 style="margin-bottom: 10px; color: var(--black);"><i class="fas fa-info-circle"></i> Spot Details</h4>
+                            <div id="spotDetailsContent"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lookup Ticket -->
+                <div id="lookupTicket" class="tab-content">
+                    <div class="card">
+                        <div class="card-title"><i class="fas fa-search"></i> Lookup Ticket</div>
+                        <div class="message message-success" id="lookupSuccess"></div>
+                        <div class="message message-error" id="lookupError"></div>
+                        <form onsubmit="handleLookupVehicle(event)" class="form-section">
+                            <div class="form-group">
+                                <label>Vehicle Number</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-id-card"></i>
+                                    <input type="text" id="lookupVehicleNumber" placeholder="Enter vehicle number" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success" style="width: 100%;">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </form>
+                        <div id="lookupResult" class="hidden" style="background: white; border: 2px solid var(--blue); border-radius: var(--radius-sm); padding: 20px; margin-top: 16px;">
+                            <h4 style="color: var(--blue); margin-bottom: 12px;"><i class="fas fa-info-circle"></i> Vehicle Details</h4>
+                            <table>
+                                <tr><td>Ticket ID</td><td id="lookupTicketId"></td></tr>
+                                <tr><td>Vehicle Number</td><td id="lookupVehicleNo"></td></tr>
+                                <tr><td>Vehicle Type</td><td id="lookupVehicleType"></td></tr>
+                                <tr><td>Owner Name</td><td id="lookupOwner"></td></tr>
+                                <tr><td>Spot Number</td><td id="lookupSpot"></td></tr>
+                                <tr><td>Floor</td><td id="lookupFloor"></td></tr>
+                                <tr><td>Entry Time</td><td id="lookupEntry"></td></tr>
+                                <tr><td>Duration</td><td id="lookupDuration"></td></tr>
+                                <tr><td>Status</td><td><span id="lookupStatus" class="badge"></span></td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lost Ticket -->
+                <div id="lostTicket" class="tab-content">
+                    <div class="card">
+                        <div class="card-title"><i class="fas fa-ticket-alt"></i> Report Lost Ticket</div>
+                        <p style="color: var(--gray-500); font-size: 14px; margin-bottom: 16px;">
+                            If you've lost your parking ticket, enter your vehicle number to mark it as LOST.
+                        </p>
+                        <div class="message message-success" id="lostSuccess"></div>
+                        <div class="message message-error" id="lostError"></div>
+                        <form onsubmit="handleLostTicketSubmit(event)" class="form-section">
+                            <div class="form-group">
+                                <label>Vehicle Number</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-id-card"></i>
+                                    <input type="text" id="lostTicketVehicleNumber" placeholder="Enter vehicle number" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-danger" style="width: 100%;">
+                                <i class="fas fa-exclamation-triangle"></i> Report Lost Ticket
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Charges List - Table Format -->
+                <div id="chargesList" class="tab-content">
+                    <div class="card">
+                        <div class="card-title"><i class="fas fa-receipt"></i> Parking Charges List</div>
+                        <p style="color: var(--gray-500); font-size: 14px; margin-bottom: 16px;">
+                            Rates are charged per hour or fraction thereof. Minimum charge applies for 10 minutes.
+                        </p>
+                        <div class="table-responsive">
+                            <table class="charges-table">
+                                <thead>
+                                    <tr>
+                                        <th>Vehicle Type</th>
+                                        <th>Hourly Rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Bike</strong></td><td>₹20.00 / hr</td></tr>
+                                    <tr><td><strong>Electric Bike</strong></td><td>₹30.00 / hr</td></tr>
+                                    <tr><td><strong>Car</strong></td><td>₹40.00 / hr</td></tr>
+                                    <tr><td><strong>Electric Car</strong></td><td>₹50.00 / hr</td></tr>
+                                    <tr><td><strong>Bus</strong></td><td>₹100.00 / hr</td></tr>
+                                    <tr><td><strong>Truck</strong></td><td>₹150.00 / hr</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN DASHBOARD -->
+        <div id="adminDashboard" class="dashboard-container hidden">
+            <div class="dashboard-header">
+                <div class="brand">
+                    <i class="fas fa-user-shield"></i>
+                    <div>
+                        <h1>Park <span class="highlight-yellow">Smart</span></h1>
+                        <div class="subtitle">Admin Dashboard</div>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div class="user-badge">
+                        <div class="avatar" id="adminAvatar">A</div>
+                        <span class="name" id="adminUsername">Admin</span>
+                    </div>
+                    <button class="btn-logout" onclick="handleLogout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchAdminTab('overview')">
+                        <i class="fas fa-chart-pie"></i> Overview
+                    </button>
+                    <button class="tab-btn" onclick="switchAdminTab('manageSpots')">
+                        <i class="fas fa-parking"></i> Manage Spots
+                    </button>
+                    <button class="tab-btn" onclick="switchAdminTab('dailyReport')">
+                        <i class="fas fa-file-alt"></i> Daily Report
+                    </button>
+                </div>
+
+                <!-- Overview -->
+                <div id="overview" class="tab-content active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-building"></i></div>
+                            <div class="stat-value" id="adminLotId">-</div>
+                            <div class="stat-label">Lot ID</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-car"></i></div>
+                            <div class="stat-value" id="adminTotalVehicles">-</div>
+                            <div class="stat-label">Current Vehicles</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-exchange-alt"></i></div>
+                            <div class="stat-value" id="adminTotalTransactions">-</div>
+                            <div class="stat-label">Total Transactions</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-rupee-sign"></i></div>
+                            <div class="stat-value" id="adminTotalRevenue">-</div>
+                            <div class="stat-label">Total Revenue</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title"><i class="fas fa-info-circle"></i> Lot Details</div>
+                        <table>
+                            <tr><td>Lot Name  :</td><td id="adminLotName"></td></tr>
+                            <tr><td>Address   :</td><td id="adminAddress"></td></tr>
+                            <tr><td>Contact   :</td><td id="adminMobile"></td></tr>
+                        </table>
+                    </div>
+                    <div class="card">
+                        <div class="card-title"><i class="fas fa-chart-bar"></i> Floor Availability</div>
+                        <div id="adminFloorsStatus"></div>
+                    </div>
+                </div>
+
+                <!-- Manage Spots -->
+                <div id="manageSpots" class="tab-content">
+                    <div class="card">
+                        <div class="card-title"><i class="fas fa-plus-circle"></i> Add Parking Spot(s)</div>
+                        <div class="message message-success" id="addSpotSuccess"></div>
+                        <div class="message message-error" id="addSpotError"></div>
+                        <form onsubmit="handleAddSpot(event)" class="form-section">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Floor Number</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-building"></i>
+                                        <select id="addSpotFloor" required>
+                                            <option value="">Select Floor</option>
+                                            <option value="1">Ground Floor 1</option>
+                                            <option value="2">Floor 2</option>
+                                            <option value="3">Floor 3</option>
+                                            <option value="4">Floor 4</option>
+                                            <option value="5">Floor 5</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Spot Type</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-tag"></i>
+                                        <select id="addSpotType" required>
+                                            <option value="">Select Type</option>
+                                            <option value="Bike Spot">Bike Spot</option>
+                                            <option value="Electric Bike Spot">Electric Bike Spot</option>
+                                            <option value="Car Spot">Car Spot</option>
+                                            <option value="Electric Car Spot">Electric Car Spot</option>
+                                            <option value="Truck Spot">Truck Spot</option>
+                                            <option value="Bus Spot">Bus Spot</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Starting Spot Number (1-1000)</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-hashtag"></i>
+                                        <input type="number" id="addSpotNumber" min="1" max="1000" placeholder="e.g., 1, 10, 25" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>How many spots to add</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-sort-numeric-up"></i>
+                                        <input type="number" id="addSpotCount" min="1" max="100" value="1" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success" style="width: 100%;">
+                                <i class="fas fa-plus"></i> Add Spot(s)
+                            </button>
+                        </form>
+                    </div>
+                    <div class="card">
+                        <div class="card-title"><i class="fas fa-minus-circle"></i> Remove Parking Spot</div>
+                        <div class="message message-success" id="removeSpotSuccess"></div>
+                        <div class="message message-error" id="removeSpotError"></div>
+                        <form onsubmit="handleRemoveSpot(event)" class="form-section">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Floor Number</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-building"></i>
+                                        <select id="removeSpotFloor" required>
+                                            <option value="">Select Floor</option>
+                                            <option value="1">Ground Floor 1</option>
+                                            <option value="2">Floor 2</option>
+                                            <option value="3">Floor 3</option>
+                                            <option value="4">Floor 4</option>
+                                            <option value="5">Floor 5</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Starting Spot Number</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-hashtag"></i>
+                                        <input type="number" id="removeSpotNumber" min="1" max="1000" placeholder="Enter starting spot number" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>How many spots to remove</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-sort-numeric-down"></i>
+                                        <input type="number" id="removeSpotCount" min="1" max="100" value="1" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-danger" style="width: 100%;">
+                                <i class="fas fa-trash"></i> Remove Spot
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Daily Report - Today, Yesterday, Monthly -->
+                <div id="dailyReport" class="tab-content">
+                    <div class="card">
+                        <div class="card-title"><i class="fas fa-file-alt"></i> Reports</div>
+                        
+                        <!-- Report Period Tabs -->
+                        <div class="report-period-tabs">
+                            <button class="report-period-btn active" onclick="switchReportPeriod('today')">
+                                <i class="fas fa-calendar-day"></i> Today
+                            </button>
+                            <button class="report-period-btn" onclick="switchReportPeriod('yesterday')">
+                                <i class="fas fa-calendar-day"></i> Yesterday
+                            </button>
+                            <button class="report-period-btn" onclick="switchReportPeriod('monthly')">
+                                <i class="fas fa-calendar-alt"></i> This Month
+                            </button>
+                        </div>
+
+                        <!-- Today Report -->
+                        <div id="report-today" class="report-period-content active">
+                            <div class="card" style="border-left: 4px solid var(--success);">
+                                <div class="card-title" style="font-size: 14px; color: var(--success);">
+                                    <i class="fas fa-calendar-check"></i> Today's Report
+                                </div>
+                                <div id="todayReportContent"></div>
+                            </div>
+                        </div>
+
+                        <!-- Yesterday Report -->
+                        <div id="report-yesterday" class="report-period-content">
+                            <div class="card" style="border-left: 4px solid var(--yellow);">
+                                <div class="card-title" style="font-size: 14px; color: var(--yellow-dark);">
+                                    <i class="fas fa-calendar-day"></i> Yesterday's Report
+                                </div>
+                                <div id="yesterdayReportContent"></div>
+                            </div>
+                        </div>
+
+                        <!-- Monthly Report -->
+                        <div id="report-monthly" class="report-period-content">
+                            <div class="card" style="border-left: 4px solid var(--blue);">
+                                <div class="card-title" style="font-size: 14px; color: var(--blue);">
+                                    <i class="fas fa-calendar-alt"></i> This Month's Report
+                                </div>
+                                <div id="monthlyReportContent"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '/api';
+        let currentUser = null;
+        let loginType = 'user';
+        let registerType = 'user';
+        let currentReportPeriod = 'today';
+
+        function showView(viewId) {
+            document.querySelectorAll('[id$="View"], [id$="Dashboard"]').forEach(el => {
+                el.classList.add('hidden');
+            });
+            document.getElementById(viewId).classList.remove('hidden');
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('en-IN', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function showNotification(message, type = 'info', duration = 4000) {
+            const container = document.getElementById('notificationContainer');
+            const icons = {
+                error: '❌', success: '✅', info: 'ℹ️', warning: '⚠️'
+            };
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <span class="notification-icon">${icons[type] || 'ℹ️'}</span>
+                <span>${message}</span>
+                <button class="notification-close" onclick="this.parentElement.remove()">✕</button>
+            `;
+            container.appendChild(notification);
+            setTimeout(() => {
+                notification.classList.add('removing');
+                setTimeout(() => notification.remove(), 300);
+            }, duration);
+        }
+
+        async function makeRequest(endpoint, method = 'GET', body = null) {
+            try {
+                const options = {
+                    method,
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' }
+                };
+                if (body) options.body = JSON.stringify(body);
+                const response = await fetch(`${API_URL}${endpoint}`, options);
+                const data = await response.json();
+                return { success: response.ok, data, status: response.status };
+            } catch (error) {
+                console.error('Request error:', error);
+                showNotification('🔴 Backend server not running! Run: python app.py', 'error', 5000);
+                return { success: false, data: { message: 'Network error' }, status: 0 };
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const colorInput = document.getElementById('vehicleColor');
+            const colorPreview = document.getElementById('colorPreview');
+            if (colorInput && colorPreview) {
+                colorInput.addEventListener('input', function() {
+                    const color = this.value.trim();
+                    if (color) {
+                        colorPreview.style.background = color;
+                    } else {
+                        colorPreview.style.background = '#CCCCCC';
+                    }
+                });
+            }
+        });
+
+        function setLoginType(type) {
+            loginType = type;
+            document.querySelectorAll('#loginView .auth-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(type === 'user' ? 'loginUserTab' : 'loginAdminTab').classList.add('active');
+        }
+
+        function setRegisterType(type) {
+            registerType = type;
+            document.querySelectorAll('#registerView .auth-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(type === 'user' ? 'registerUserTab' : 'registerAdminTab').classList.add('active');
+        }
+
+        function showLoginView() {
+            showView('loginView');
+            document.getElementById('registerView').classList.add('hidden');
+        }
+
+        function showRegisterView() {
+            showView('registerView');
+            document.getElementById('loginView').classList.add('hidden');
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const result = await makeRequest('/auth/login', 'POST', {
+                username, password, type: loginType
+            });
+            if (result.success) {
+                currentUser = { username, type: loginType };
+                showNotification(`Welcome ${username}! 👋`, 'success', 2000);
+                if (loginType === 'admin') {
+                    loadAdminDashboard();
+                    showView('adminDashboard');
+                } else {
+                    loadUserDashboard();
+                    showView('userDashboard');
+                }
+            } else {
+                showNotification(`❌ ${result.data.message}`, 'error', 4000);
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirm = document.getElementById('registerConfirm').value;
+            if (password !== confirm) {
+                showNotification('❌ Passwords do not match', 'error', 4000);
+                return;
+            }
+            const result = await makeRequest('/auth/register', 'POST', {
+                username, password, type: registerType
+            });
+            if (result.success) {
+                showNotification('✅ Registration successful! Please login.', 'success', 2000);
+                setTimeout(() => showLoginView(), 1500);
+            } else {
+                showNotification(`❌ ${result.data.message}`, 'error', 4000);
+            }
+        }
+
+        async function handleLogout() {
+            await makeRequest('/auth/logout', 'POST');
+            currentUser = null;
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            showNotification('👋 Logged out successfully', 'info', 2000);
+            showLoginView();
+        }
+
+        function switchUserTab(tabName) {
+            document.querySelectorAll('#userDashboard .tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('#userDashboard .tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            document.querySelector(`#userDashboard .tab-btn[onclick="switchUserTab('${tabName}')"]`)?.classList.add('active');
+            if (tabName === 'vehicleEntry') loadFloorAvailabilityDots();
+            else if (tabName === 'allDisplays') loadAllDisplays();
+            else if (tabName === 'floorDisplay') loadFloorSpotsGrid();
+        }
+
+        async function loadUserDashboard() {
+            document.getElementById('userUsername').textContent = currentUser.username;
+            document.getElementById('userAvatar').textContent = currentUser.username.charAt(0).toUpperCase();
+            loadFloorAvailabilityDots();
+        }
+
+        async function loadFloorAvailabilityDots() {
+            const result = await makeRequest('/lot/floors');
+            if (result.success) {
+                let html = '';
+                result.data.floors.forEach((floor) => {
+                    const occupancy = floor.total_spots > 0 ? Math.round((floor.occupied_spots / floor.total_spots) * 100) : 0;
+                    let dotsHtml = '';
+                    const totalSpots = Math.min(floor.total_spots, 50);
+                    const occupiedSpots = Math.min(floor.occupied_spots, totalSpots);
+                    const occupiedIndices = [];
+                    while (occupiedIndices.length < occupiedSpots && occupiedIndices.length < totalSpots) {
+                        const idx = Math.floor(Math.random() * totalSpots);
+                        if (!occupiedIndices.includes(idx)) {
+                            occupiedIndices.push(idx);
+                        }
+                    }
+                    for (let i = 1; i <= totalSpots; i++) {
+                        const isOccupied = occupiedIndices.includes(i - 1);
+                        const cls = isOccupied ? 'occupied' : 'vacant';
+                        dotsHtml += `
+                            <div class="dot-seat ${cls}" title="Spot ${i} - ${isOccupied ? 'OCCUPIED' : 'VACANT'}">
+                                <span class="seat-number">${i}</span>
+                            </div>
+                        `;
+                    }
+                    if (floor.total_spots > 50) {
+                        dotsHtml += `
+                            <div class="dot-seat" style="background: transparent; border: 2px dashed var(--gray-300); color: var(--gray-400); cursor: default; width: 50px; font-size: 12px;">
+                                +${floor.total_spots - 50}
+                            </div>
+                        `;
+                    }
+                    html += `
+                        <div class="floor-availability">
+                            <div class="floor-header">
+                                <div class="floor-title">
+                                    <i class="fas fa-building"></i> ${floor.floor_label}
+                                </div>
+                                <div class="floor-stats">
+                                    <span class="stat-item">
+                                        <span class="dot green"></span> ${floor.available_spots} Vacant
+                                    </span>
+                                    <span class="stat-item">
+                                        <span class="dot red"></span> ${floor.occupied_spots} Occupied
+                                    </span>
+                                    <span class="stat-item" style="font-weight: 600; color: var(--gray-700);">
+                                        ${floor.available_spots}/${floor.total_spots} Available
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="dots-grid">${dotsHtml}</div>
+                            <div class="legend-dots">
+                                <span class="legend-item"><span class="dot vacant"></span> Available</span>
+                                <span class="legend-item"><span class="dot occupied"></span> Occupied</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${occupancy}%"></div>
+                            </div>
+                            <div class="floor-detail">${occupancy}% Occupied</div>
+                        </div>
+                    `;
+                });
+                document.getElementById('floorStatus').innerHTML = html;
+                const adminFloors = document.getElementById('adminFloorsStatus');
+                if (adminFloors) adminFloors.innerHTML = html;
+            }
+        }
+
+        async function loadAllDisplays() {
+            const result = await makeRequest('/display/all');
+            if (result.success) {
+                let html = '';
+                result.data.displays.forEach(floor => {
+                    const occupancy = floor.total_spots > 0 ? Math.round((floor.occupied_spots / floor.total_spots) * 100) : 0;
+                    let spots = '';
+                    for (const [type, data] of Object.entries(floor.spots_by_type)) {
+                        const pct = data.total > 0 ? (data.available / data.total) * 100 : 0;
+                        spots += `
+                            <div class="spot-type-row">
+                                <span class="label"><strong>${type}</strong></span>
+                                <span class="count">${data.available}/${data.total} available</span>
+                            </div>
+                            <div class="mini-progress">
+                                <div class="fill" style="width: ${pct}%"></div>
+                            </div>
+                        `;
+                    }
+                    html += `
+                        <div class="display-board">
+                            <div class="board-title">📋 ${floor.floor_label}</div>
+                            <div class="board-subtitle">${occupancy}% Occupied · ${floor.available_spots} spots available</div>
+                            ${spots || '<div style="color: var(--gray-400); font-style: italic;">No spots configured</div>'}
+                        </div>
+                    `;
+                });
+                document.getElementById('allDisplayBoardsContent').innerHTML = html || '<p style="color: var(--gray-400);">No display boards available.</p>';
+            }
+        }
+
+        async function handleVehicleEntry(e) {
+            e.preventDefault();
+            const vehicleType = document.getElementById('vehicleType').value;
+            const vehicleNumber = document.getElementById('vehicleNumber').value.toUpperCase();
+            const ownerName = document.getElementById('ownerName').value;
+            const color = document.getElementById('vehicleColor').value;
+            if (!vehicleType || !vehicleNumber || !ownerName) {
+                showNotification('❌ Please fill all required fields', 'error', 3000);
+                return;
+            }
+            const result = await makeRequest('/vehicle/entry', 'POST', {
+                vehicle_type: vehicleType,
+                vehicle_number: vehicleNumber,
+                owner_name: ownerName,
+                color: color
+            });
+            if (result.success) {
+                const t = result.data.ticket;
+                document.getElementById('ticketIdDisplay').textContent = t.ticket_id;
+                document.getElementById('ticketVehicleDisplay').textContent = t.vehicle_number;
+                document.getElementById('ticketTypeDisplay').textContent = t.vehicle_type;
+                document.getElementById('ticketOwnerDisplay').textContent = t.owner_name;
+                document.getElementById('ticketSpotDisplay').textContent = t.spot_number;
+                document.getElementById('ticketFloorDisplay').textContent = t.floor_label;
+                document.getElementById('ticketEntryDisplay').textContent = formatDate(t.entry_time);
+                document.getElementById('entryTicket').classList.remove('hidden');
+                showNotification(`✅ ${vehicleNumber} parked at Spot ${t.spot_number}`, 'success', 3000);
+                e.target.reset();
+                document.getElementById('colorPreview').style.background = '#CCCCCC';
+                loadFloorAvailabilityDots();
+            } else {
+                showNotification(`❌ ${result.data.message}`, 'error', 4000);
+            }
+        }
+
+        async function handleLookupVehicle(e) {
+            e.preventDefault();
+            const vn = document.getElementById('lookupVehicleNumber').value.toUpperCase();
+            const result = await makeRequest('/vehicle/lookup', 'POST', { vehicle_number: vn });
+            if (result.success) {
+                const t = result.data.ticket;
+                document.getElementById('lookupTicketId').textContent = t.ticket_id;
+                document.getElementById('lookupVehicleNo').textContent = t.vehicle_number;
+                document.getElementById('lookupVehicleType').textContent = t.vehicle_type;
+                document.getElementById('lookupOwner').textContent = t.owner_name;
+                document.getElementById('lookupSpot').textContent = t.spot_number;
+                document.getElementById('lookupFloor').textContent = t.floor_label;
+                document.getElementById('lookupEntry').textContent = formatDate(t.entry_time);
+                document.getElementById('lookupDuration').textContent = t.duration;
+                const badge = document.getElementById('lookupStatus');
+                badge.textContent = t.status;
+                badge.className = `badge ${t.status === 'ACTIVE' ? 'badge-success' : 'badge-warning'}`;
+                document.getElementById('lookupResult').classList.remove('hidden');
+                showNotification(`✅ Vehicle found! Status: ${t.status}`, 'success', 2000);
+            } else {
+                showNotification(`❌ ${result.data.message}`, 'error', 4000);
+                document.getElementById('lookupResult').classList.add('hidden');
+            }
+        }
+
+        async function handleCalculatePayment(e) {
+            e.preventDefault();
+            const vn = document.getElementById('paymentVehicleNumber').value.toUpperCase();
+            const result = await makeRequest('/payment/calculate', 'POST', { vehicle_number: vn });
+            if (result.success) {
+                const p = result.data.payment;
+                document.getElementById('paymentDuration').textContent = `${p.duration_hours}h ${p.duration_minutes}m`;
+                document.getElementById('paymentRate').textContent = `₹${p.hourly_rate}/hr`;
+                document.getElementById('paymentTotalMinutes').textContent = `${p.total_duration_minutes} minutes`;
+                document.getElementById('paymentAmount').textContent = `₹${p.amount.toFixed(2)}`;
+                document.getElementById('paymentDetails').classList.remove('hidden');
+                showNotification(`💰 Amount due: ₹${p.amount.toFixed(2)}`, 'info', 3000);
+            } else {
+                showNotification(`❌ ${result.data.message}`, 'error', 4000);
+                document.getElementById('paymentDetails').classList.add('hidden');
+            }
+        }
+
+        async function handleProcessPayment(e) {
+            e.preventDefault();
+            const vn = document.getElementById('paymentVehicleNumber').value.toUpperCase();
+            const method = document.getElementById('paymentMethod').value;
+            if (!method) {
+                showNotification('❌ Please select a payment method', 'error', 3000);
+                return;
+            }
+            const result = await makeRequest('/payment/process', 'POST', {
+                vehicle_number: vn,
+                payment_method: method
+            });
+            if (result.success) {
+                const r = result.data.receipt;
+                document.getElementById('receiptPaymentId').textContent = r.payment_id;
+                document.getElementById('receiptTicketId').textContent = r.ticket_id;
+                document.getElementById('receiptAmount').textContent = `₹${r.amount.toFixed(2)}`;
+                document.getElementById('receiptMethod').textContent = r.method;
+                document.getElementById('receiptDisplay').classList.remove('hidden');
+                document.getElementById('paymentDetails').classList.add('hidden');
+                showNotification(`✅ Payment of ₹${r.amount.toFixed(2)} completed!`, 'success', 4000);
+                document.getElementById('paymentVehicleNumber').value = '';
+                document.getElementById('paymentMethod').value = '';
+                loadFloorAvailabilityDots();
+            } else {
+                showNotification(`❌ ${result.data.message}`, 'error', 4000);
+            }
+        }
+
+        async function handleLostTicketSubmit(e) {
+            e.preventDefault();
+            const vn = document.getElementById('lostTicketVehicleNumber').value.toUpperCase();
+            const result = await makeRequest('/vehicle/lost-ticket', 'POST', { vehicle_number: vn });
+            if (result.success) {
+                showNotification(`⚠️ ${result.data.message}`, 'warning', 4000);
+                e.target.reset();
+            } else {
+                showNotification(`❌ ${result.data.message}`, 'error', 4000);
+            }
+        }
+
+        async function loadFloorSpotsGrid() {
+            const floorNum = document.getElementById('floorDisplaySelector').value;
+            const grid = document.getElementById('floorSpotsGrid');
+            grid.innerHTML = '<div class="spinner" style="margin: 20px auto;"></div>';
+            document.getElementById('spotDetailsBox').classList.add('hidden');
+            const result = await makeRequest(`/lot/floor/${floorNum}/spots`);
+            if (result.success) {
+                let html = '';
+                const sortedSpots = result.data.spots.sort((a, b) => parseInt(a.spot_number) - parseInt(b.spot_number));
+                sortedSpots.forEach((spot) => {
+                    const cls = spot.is_available ? 'spot-vacant' : 'spot-occupied';
+                    const typeLabel = spot.spot_type.replace(' Spot', '');
+                    const dataStr = JSON.stringify(spot).replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                    html += `
+                        <div class="spot-cell ${cls}" onclick="showSpotDetails('${dataStr}')">
+                            <div class="spot-number">${spot.spot_number}</div>
+                            <div class="spot-type">${typeLabel}</div>
+                        </div>
+                    `;
+                });
+                grid.innerHTML = html || '<div style="grid-column:1/-1;color:var(--gray-400);text-align:center;padding:30px;">No spots on this floor</div>';
+            } else {
+                grid.innerHTML = `<div style="grid-column:1/-1;color:var(--danger);text-align:center;padding:30px;">${result.data.message}</div>`;
+            }
+        }
+
+        function showSpotDetails(spotDataJsonEscaped) {
+            const spot = JSON.parse(spotDataJsonEscaped.replace(/&quot;/g, '"'));
+            const box = document.getElementById('spotDetailsBox');
+            const content = document.getElementById('spotDetailsContent');
+            let html = '';
+            if (spot.is_available) {
+                html = `
+                    <div style="color: var(--success); font-weight: 600; font-size: 16px; margin-bottom: 4px;">
+                        🟢 Spot ${spot.spot_number} is VACANT
+                    </div>
+                    <div style="color: var(--gray-600);">Type: ${spot.spot_type}</div>
+                `;
+            } else if (spot.vehicle_info) {
+                const v = spot.vehicle_info;
+                html = `
+                    <div style="color: var(--danger); font-weight: 600; font-size: 16px; margin-bottom: 8px;">
+                        🔴 Spot ${spot.spot_number} is OCCUPIED
+                    </div>
+                    <table style="font-size:14px;">
+                        <tr><td style="padding:4px 12px 4px 0;font-weight:600;">Vehicle Number</td><td><strong>${v.vehicle_number}</strong></td></tr>
+                        <tr><td style="padding:4px 12px 4px 0;font-weight:600;">Vehicle Type</td><td><strong>${v.vehicle_type}</strong></td></tr>
+                        <tr><td style="padding:4px 12px 4px 0;font-weight:600;">Owner Name</td><td><strong>${v.owner_name}</strong></td></tr>
+                        <tr><td style="padding:4px 12px 4px 0;font-weight:600;">Color</td><td><strong>${v.color || 'N/A'}</strong></td></tr>
+                        <tr><td style="padding:4px 12px 4px 0;font-weight:600;">Parked Since</td><td><strong>${formatDate(v.entry_time)}</strong></td></tr>
+                    </table>
+                `;
+            } else {
+                html = `
+                    <div style="color: var(--danger); font-weight: 600; font-size: 16px; margin-bottom: 4px;">
+                        🔴 Spot ${spot.spot_number} is OCCUPIED
+                    </div>
+                    <div style="color: var(--gray-600);">Type: ${spot.spot_type}</div>
+                    <div style="color: var(--gray-400); font-size: 13px; margin-top: 4px;">(No vehicle details available)</div>
+                `;
+            }
+            content.innerHTML = html;
+            box.classList.remove('hidden');
+        }
+
+        // ================================================================
+        // ADMIN FUNCTIONS
+        // ================================================================
+
+        function switchAdminTab(tabName) {
+            document.querySelectorAll('#adminDashboard .tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('#adminDashboard .tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            document.querySelector(`#adminDashboard .tab-btn[onclick="switchAdminTab('${tabName}')"]`)?.classList.add('active');
+            if (tabName === 'dailyReport') loadAdminReports();
+            else if (tabName === 'overview') loadAdminDashboard();
+        }
+
+        // Report Period Switcher
+        function switchReportPeriod(period) {
+            currentReportPeriod = period;
+            document.querySelectorAll('.report-period-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.report-period-content').forEach(content => content.classList.remove('active'));
+            
+            document.querySelector(`.report-period-btn[onclick="switchReportPeriod('${period}')"]`)?.classList.add('active');
+            document.getElementById(`report-${period}`)?.classList.add('active');
+        }
+
+        async function loadAdminDashboard() {
+            document.getElementById('adminUsername').textContent = currentUser.username;
+            document.getElementById('adminAvatar').textContent = currentUser.username.charAt(0).toUpperCase();
+            const result = await makeRequest('/admin/dashboard');
+            if (result.success) {
+                const d = result.data.dashboard;
+                document.getElementById('adminLotId').textContent = d.lot_info.lot_id;
+                document.getElementById('adminTotalVehicles').textContent = d.total_vehicles_parked;
+                document.getElementById('adminTotalTransactions').textContent = d.total_transactions;
+                document.getElementById('adminTotalRevenue').textContent = `₹${d.total_revenue.toFixed(2)}`;
+                document.getElementById('adminLotName').textContent = d.lot_info.name;
+                document.getElementById('adminAddress').textContent = d.lot_info.address;
+                document.getElementById('adminMobile').textContent = d.lot_info.mobile;
+            }
+            loadFloorAvailabilityDots();
+        }
+
+        async function handleAddSpot(e) {
+            e.preventDefault();
+            const floor_number = document.getElementById('addSpotFloor').value;
+            const spot_type = document.getElementById('addSpotType').value;
+            const spot_number = document.getElementById('addSpotNumber').value;
+            const count = document.getElementById('addSpotCount').value;
+            if (!floor_number || !spot_type || !spot_number) {
+                showNotification('❌ Please fill all required fields', 'error', 3000);
+                return;
+            }
+            const result = await makeRequest('/admin/spot/add', 'POST', {
+                floor_number,
+                spot_type,
+                spot_number,
+                count
+            });
+            if (result.success) {
+                showNotification(`✅ ${result.data.message}`, 'success', 3000);
+                e.target.reset();
+                loadAdminDashboard();
+            } else {
+                showNotification(`❌ ${result.data.message}`, 'error', 4000);
+            }
+        }
+
+        async function handleRemoveSpot(e) {
+            e.preventDefault();
+            const floor_number = document.getElementById('removeSpotFloor').value;
+            const spot_type = document.getElementById('removeSpotType').value;
+            const spot_number = document.getElementById('removeSpotNumber').value;
+            const count = document.getElementById('removeSpotCount').value;
+            if (!floor_number || !spot_type || !spot_number || !count) {
+                showNotification('❌ Please fill all required fields', 'error', 3000);
+                return;
+            }
+            const result = await makeRequest('/admin/spot/remove', 'POST', {
+                floor_number,
+                spot_type,
+                spot_number,
+                count
+            });
+            if (result.success) {
+                showNotification(`✅ ${result.data.message}`, 'success', 3000);
+                e.target.reset();
+                loadAdminDashboard();
+            } else {
+                showNotification(`❌ ${result.data.message}`, 'error', 4000);
+            }
+        }
+
+        // ================================================================
+        // UPDATED: ADMIN REPORTS - TODAY, YESTERDAY, MONTHLY
+        // ================================================================
+
+        function generateReportTable(reportData, periodLabel) {
+            let html = `
+                <div style="margin-bottom: 16px; padding: 12px; background: var(--gray-50); border-radius: var(--radius-sm);">
+                    <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                        <span style="font-weight: 600; color: var(--gray-700);">
+                            <i class="fas fa-calendar"></i> ${periodLabel}
+                        </span>
+                        <span style="font-weight: 600; color: var(--blue);">
+                            Total Revenue: <span style="color: var(--black);">₹${reportData.total_revenue.toFixed(2)}</span>
+                        </span>
+                        <span style="font-weight: 600; color: var(--blue);">
+                            Total Transactions: <span style="color: var(--black);">${reportData.total_transactions}</span>
+                        </span>
+                    </div>
+                </div>
+            `;
+
+            // Vehicle Type Table
+            let vtHtml = '';
+            let vtTotalCount = 0;
+            let vtTotalRevenue = 0;
+            
+            for (const [type, data] of Object.entries(reportData.by_vehicle_type)) {
+                vtTotalCount += data.count;
+                vtTotalRevenue += data.revenue;
+                vtHtml += `
+                    <tr>
+                        <td><strong>${type}</strong></td>
+                        <td>${data.count}</td>
+                        <td>₹${data.revenue.toFixed(2)}</td>
+                    </tr>
+                `;
+            }
+            
+            vtHtml += `
+                <tr class="total-row">
+                    <td><strong>TOTAL</strong></td>
+                    <td><strong>${vtTotalCount}</strong></td>
+                    <td><strong>₹${vtTotalRevenue.toFixed(2)}</strong></td>
+                </tr>
+            `;
+
+            // Payment Method Table
+            let pmHtml = '';
+            let pmTotalCount = 0;
+            let pmTotalAmount = 0;
+            
+            for (const [method, data] of Object.entries(reportData.by_payment_method)) {
+                pmTotalCount += data.count;
+                pmTotalAmount += data.amount;
+                pmHtml += `
+                    <tr>
+                        <td><strong>${method}</strong></td>
+                        <td>${data.count}</td>
+                        <td>₹${data.amount.toFixed(2)}</td>
+                    </tr>
+                `;
+            }
+            
+            pmHtml += `
+                <tr class="total-row">
+                    <td><strong>TOTAL</strong></td>
+                    <td><strong>${pmTotalCount}</strong></td>
+                    <td><strong>₹${pmTotalAmount.toFixed(2)}</strong></td>
+                </tr>
+            `;
+
+            html += `
+                <div style="margin-bottom: 20px;">
+                    <div class="card-title" style="font-size: 14px; margin-bottom: 12px;">
+                        <i class="fas fa-truck"></i> Revenue by Vehicle Type
+                    </div>
+                    <div class="report-table-wrapper">
+                        <table class="report-table">
+                            <thead>
+                                <tr><th>Vehicle Type</th><th>Count</th><th>Revenue (₹)</th></tr>
+                            </thead>
+                            <tbody>${vtHtml}</tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="card-title" style="font-size: 14px; margin-bottom: 12px;">
+                        <i class="fas fa-credit-card"></i> Revenue by Payment Method
+                    </div>
+                    <div class="report-table-wrapper">
+                        <table class="report-table">
+                            <thead>
+                                <tr><th>Payment Method</th><th>Transactions</th><th>Amount (₹)</th></tr>
+                            </thead>
+                            <tbody>${pmHtml}</tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+
+            return html;
+        }
+
+        async function loadAdminReports() {
+            const result = await makeRequest('/admin/reports');
+            if (result.success) {
+                const reports = result.data.reports;
+
+                // Today's Report
+                const todayLabel = `Today (${new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })})`;
+                document.getElementById('todayReportContent').innerHTML = generateReportTable(reports.today, todayLabel);
+
+                // Yesterday's Report
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayLabel = `Yesterday (${yesterday.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })})`;
+                document.getElementById('yesterdayReportContent').innerHTML = generateReportTable(reports.yesterday, yesterdayLabel);
+
+                // Monthly Report
+                const monthLabel = `This Month (${new Date().toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })})`;
+                document.getElementById('monthlyReportContent').innerHTML = generateReportTable(reports.monthly, monthLabel);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            showLoginView();
+            document.getElementById('loginUserTab').classList.add('active');
+        });
+    </script>
+</body>
+</html>
